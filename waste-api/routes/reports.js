@@ -1,5 +1,5 @@
-const express = require('express');
-const Report = require('../models/Report');
+import express from 'express';
+import Report from '../models/Report.js';
 
 const router = express.Router();
 
@@ -38,4 +38,4 @@ router.get('/', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

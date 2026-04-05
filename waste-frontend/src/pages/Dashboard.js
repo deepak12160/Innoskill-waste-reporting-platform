@@ -7,7 +7,7 @@ const MapContainer = dynamic(() => import('../components/MapContainer'), { ssr: 
 
 export default function Dashboard() {
   const [reports, setReports] = useState([]);
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
 
   useEffect(() => {
     // 1. Initial Load

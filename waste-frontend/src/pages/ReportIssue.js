@@ -4,7 +4,7 @@ import axios from 'axios';
 export default function ReportIssue() {
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState("");
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
 
   const submitReport = () => {
     if (!title) return alert("Describe the waste issue!");

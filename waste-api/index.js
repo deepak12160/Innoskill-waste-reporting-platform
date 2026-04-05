@@ -1,17 +1,18 @@
-import reportRoutes from "./routes/reports.js"; // check path carefully
-app.use("/api/reports", reportRoutes);
-require('dotenv').config({ path: './.env' });
+import dotenv from 'dotenv';
+import express from 'express';
+import http from 'http';
+import { Server } from 'socket.io';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import fileUpload from 'express-fileupload';
+import reportRoutes from './routes/reports.js';
+
+dotenv.config({ path: './.env' });
 console.log('Loaded MONGO_URI:', process.env.MONGO_URI);
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const fileUpload = require('express-fileupload');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, { cors: { origin: '*' } });
 
 app.use(cors());
 app.use(express.json());
@@ -22,13 +23,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Database - Replace with your actual Mongo URI in .env
 if (!process.env.MONGO_URI) {
   console.error('❌ MONGO_URI not set in .env');
   process.exit(1);
 }
 
-app.use('/api/reports', require('./routes/reports'));
+app.use('/api/reports', reportRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {

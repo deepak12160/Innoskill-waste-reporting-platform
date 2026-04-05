@@ -8,9 +8,11 @@ import fileUpload from 'express-fileupload';
 import reportRoutes from './routes/reports.js';
 
 dotenv.config({ path: './.env' });
+
+const app = express();   // ✅ MOVE THIS UP
+
 console.log('Loaded MONGO_URI:', process.env.MONGO_URI);
 
-const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
 
@@ -28,6 +30,12 @@ if (!process.env.MONGO_URI) {
   process.exit(1);
 }
 
+// ✅ ROOT ROUTE (NOW CORRECT)
+app.get("/", (req, res) => {
+  res.send("Backend is live 🚀");
+});
+
+// ✅ API ROUTE
 app.use('/api/reports', reportRoutes);
 
 mongoose.connect(process.env.MONGO_URI)

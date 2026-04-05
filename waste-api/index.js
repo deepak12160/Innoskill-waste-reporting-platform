@@ -1,3 +1,5 @@
+import reportRoutes from "./routes/reports.js"; // check path carefully
+app.use("/api/reports", reportRoutes);
 require('dotenv').config({ path: './.env' });
 console.log('Loaded MONGO_URI:', process.env.MONGO_URI);
 const express = require('express');

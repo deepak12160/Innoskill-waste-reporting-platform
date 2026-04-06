@@ -20,7 +20,7 @@ export default function Dashboard() {
     });
 
     return () => socket.disconnect();
-  }, []);
+  }, [API_URL]);
 
   return (
     <div className="h-screen bg-slate-100 flex flex-col p-4">

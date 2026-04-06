@@ -7,11 +7,15 @@ import cors from 'cors';
 import fileUpload from 'express-fileupload';
 import reportRoutes from './routes/reports.js';
 
-dotenv.config({ path: './.env' });
+const result = dotenv.config();
+
+if (result.error) {
+  console.warn('⚠️  Warning: .env file not found. Ensure environment variables are set manually.');
+}
 
 const app = express();   // ✅ MOVE THIS UP
 
-console.log('Loaded MONGO_URI:', process.env.MONGO_URI);
+console.log('🔌 Attempting to connect to database...');
 
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
@@ -26,8 +30,8 @@ app.use((req, res, next) => {
   next();
 });
 
-if (!process.env.MONGO_URI) {
-  console.error('❌ MONGO_URI not set in .env');
+if (!process.env.MONGO_URI || process.env.MONGO_URI.includes('YOUR_CONNECTION_STRING')) {
+  console.error('❌ Error: MONGO_URI is missing or using a placeholder in .env');
   process.exit(1);
 }
 
@@ -42,6 +46,16 @@ app.use('/api/reports', reportRoutes);
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB Connected Successfully');
+
+    server.on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.error(`❌ Error: Port ${process.env.PORT || 5001} is already in use.`);
+        console.error('💡 Try killing the process or changing the PORT in your .env file.');
+      } else {
+        console.error('❌ Server Error:', err);
+      }
+      process.exit(1);
+    });
 
     server.listen(process.env.PORT || 5001, () => {
       console.log(`🚀 Server running on http://localhost:${process.env.PORT || 5001}`);

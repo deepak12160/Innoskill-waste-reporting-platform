@@ -12,7 +12,7 @@ export default function ReportIssue() {
 
     navigator.geolocation.getCurrentPosition(async (pos) => {
       const payload = {
-        title: title,
+        description: title, // Match the 'description' field expected by the API
         location: JSON.stringify({
           lat: pos.coords.latitude,
           lng: pos.coords.longitude,

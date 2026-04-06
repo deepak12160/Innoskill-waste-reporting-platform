@@ -3,38 +3,53 @@ import Report from '../models/Report.js';
 
 const router = express.Router();
 
-// Create a new report
+// 1. POST: Save a new report from your UI
 router.post('/', async (req, res) => {
   try {
-    const locationPayload = typeof req.body.location === 'string'
-      ? JSON.parse(req.body.location)
-      : req.body.location;
+    const { location, description, image } = req.body;
 
-    const newReport = await Report.create({
-      title: req.body.title,
-      imageUrl: req.body.imageUrl || 'https://via.placeholder.com/150',
-      location: locationPayload
+    const newReport = new Report({
+      location,
+      description,
+      image,
+      status: 'Pending' // Matches the Red 'Pending' button in your UI
     });
 
+    const savedReport = await newReport.save();
+
+    // This triggers the real-time update for your "View Reports" list
     if (req.io) {
-      req.io.emit('new-report', newReport);
+      req.io.emit('newReport', savedReport);
     }
 
-    res.status(201).json(newReport);
+    res.status(201).json(savedReport);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Unable to save report. Check request payload.' });
+    console.error("❌ Error saving report:", err);
+    res.status(400).json({ message: "Failed to save report", error: err.message });
   }
 });
 
-// Get all reports
+// 2. GET: Fetch all reports for the right-side list in your UI
 router.get('/', async (req, res) => {
   try {
     const reports = await Report.find().sort({ createdAt: -1 });
     res.json(reports);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Unable to read reports.' });
+    res.status(500).json({ message: "Server Error", error: err.message });
+  }
+});
+
+// 3. PATCH: Update status (to change Red 'Pending' to Green 'Resolved')
+router.patch('/:id', async (req, res) => {
+  try {
+    const updatedReport = await Report.findByIdAndUpdate(
+      req.params.id,
+      { status: req.body.status },
+      { new: true }
+    );
+    res.json(updatedReport);
+  } catch (err) {
+    res.status(400).json({ message: "Update failed" });
   }
 });
 

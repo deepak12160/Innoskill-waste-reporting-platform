@@ -1,13 +1,9 @@
 import mongoose from 'mongoose';
 
 const ReportSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  imageUrl: String,
-  location: {
-    lat: Number,
-    lng: Number,
-    address: String
-  },
+  location: { type: String, required: true },
+  description: { type: String, required: true },
+  image: { type: String }, // Store the image as base64 or URL
   status: { type: String, enum: ['Pending', 'Resolved'], default: 'Pending' },
   createdAt: { type: Date, default: Date.now }
 });

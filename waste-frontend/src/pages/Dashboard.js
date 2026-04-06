@@ -15,7 +15,7 @@ export default function Dashboard() {
 
     // 2. Real-time Connection
     const socket = io(API_URL);
-    socket.on('new-report', (newPin) => {
+    socket.on('newReport', (newPin) => {
       setReports(prev => [newPin, ...prev]);
     });
 

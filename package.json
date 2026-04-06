@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev:api": "cd waste-api && npm run dev",
+    "dev:frontend": "cd waste-frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:frontend\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,5 +16,8 @@
   "dependencies": {
     "dotenv": "^17.4.0",
     "mongoose": "^9.4.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
